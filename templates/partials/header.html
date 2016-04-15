@@ -1,0 +1,16 @@
+<div class="header">
+    <nav class="navbar">
+        <div class="container">
+            <ul class="navbar-list u-pull-right">
+                {% if user.is_authenticated %}
+                <li class="navbar-item">
+                {{ user.username }}, 
+                <a class="navbar-link" href="{% url 'accounts:logout' %}">
+                        Logout
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+</div>

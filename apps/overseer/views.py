@@ -1,5 +1,7 @@
 from django.views.generic.base import TemplateView
 
+from apps.generic.views import LoginRequiredMixin
+
 
 class Index(TemplateView):
     """

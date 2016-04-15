@@ -1,7 +1,23 @@
+{% load static from staticfiles %}
 <html>
     <head>
-        <title>Hammer</title>
+        <title>{% block title %}Hammer{% endblock title %}</title>
+
+        <!-- CSS Stylesheets -->
+        <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/skeleton.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/fonts.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
     </head>
     <body>
+        {% block header %}
+            {% include 'partials/header.html' %}
+        {% endblock header %}
+
+        {% block notifications %}
+        {% endblock notifications %}
+
+        {% block layout %}
+        {% endblock layout %}
     </body>
 </html>

@@ -40,7 +40,9 @@ DJANGO_APPS = [
 ]
 
 HAMMER_APPS = [
-   'apps.overseer',
+    'apps.accounts',
+    'apps.generic',
+    'apps.overseer',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + HAMMER_APPS
@@ -126,3 +128,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+## Authentication
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
