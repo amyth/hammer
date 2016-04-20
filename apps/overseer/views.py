@@ -34,5 +34,6 @@ class UploadJsonDataView(FormView):
         return context
 
     def form_valid(self, form, *args, **kwargs):
+        form.save_data()
         return super(UploadJsonDataView, self).form_valid(form)
 
