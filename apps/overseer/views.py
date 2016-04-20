@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
@@ -35,5 +36,8 @@ class UploadJsonDataView(FormView):
 
     def form_valid(self, form, *args, **kwargs):
         form.save_data()
+        messages.success(self.request, 'File successfully uploaded. We '\
+                'are processing the file and changes will be visible in a '\
+                'few minutes.')
         return super(UploadJsonDataView, self).form_valid(form)
 

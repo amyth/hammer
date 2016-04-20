@@ -87,6 +87,11 @@ a:hover {
     background-color: #FFEBEB;
 }
 
+.notifications.success {
+    background-color: #F0FFE0;
+    border: 1px dashed #BFE894;
+}
+
 .notifications p {
     margin-bottom: 3px;
 }

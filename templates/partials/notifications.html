@@ -16,4 +16,10 @@
          <p class="non-field">{{ upload_form.non_field_errors.0 }}</p>
     </div>
 {% endif %}
-
+{% if messages %}
+    {% for message in messages %}
+    <div class="notifications {{ message.tags }}">
+        <p>{{ message }}</p>
+    </div>
+    {% endfor %}
+{% endif %}
