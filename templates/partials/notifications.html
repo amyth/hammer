@@ -1,0 +1,19 @@
+{% if form.errors %}
+    <div class="notifications error">
+        {% for field in form %}
+            {% if field.errors %}
+                <p><strong>{{ field.name|title }}:</strong> {{ field.errors.0 }}</p>                 {% endif %}
+         {% endfor %}
+         <p class="non-field">{{ form.non_field_errors.0 }}</p>
+    </div>
+{% endif %}
+{% if upload_form.errors %}
+    <div class="notifications error">
+        {% for field in upload_form %}
+            {% if field.errors %}
+                <p><strong>{{ field.name|title }}:</strong> {{ field.errors.0 }}</p>                 {% endif %}
+         {% endfor %}
+         <p class="non-field">{{ upload_form.non_field_errors.0 }}</p>
+    </div>
+{% endif %}
+

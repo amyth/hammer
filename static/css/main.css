@@ -102,7 +102,6 @@ a:hover {
 nav.navbar {
     max-height: 60px;
     border-bottom: 1px solid #eee;
-    padding: 1.5rem 0;
 }
 li.navbar-item {
     text-transform: uppercase;
@@ -112,7 +111,31 @@ li.navbar-item {
 a.navbar-link {
     text-decoration: none;
 }
+a {
+    color: #ff0000;;
+}
+a:hover,
+a:focus {
+    color: #E42121;
+}
 a.navbar-link:hover,
 a.navbar-link:focus {
     text-decoration: underline;
+}
+a.navbar-link.icon:hover,
+a.navbar-link.icon:focus {
+    text-decoration: none;
+}
+a.navbar-link.icon span {
+    font-size: 3rem;
+}
+.text-nav {
+    margin-top:20px;
+}
+form.upload_form {
+    display:none;
+}
+a.navbar-link.icon {
+    margin-top: 7px;
+    display: inline-block;
 }
