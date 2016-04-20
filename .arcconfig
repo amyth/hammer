@@ -1,0 +1,6 @@
+{
+    "project_id": "Hammer",
+    "conduit_uri": "http://172.22.67.71/",
+    "arc.land.onto.default": "master",
+    "history.immutable": false
+}
