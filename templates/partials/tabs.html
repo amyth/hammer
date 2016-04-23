@@ -1,0 +1,20 @@
+{% load hammer_filters %}
+
+{% block tabs %}
+	<ul class="tab-list">
+		{% for tab in tabtypes %}
+			<li class="cls_tab {% if request.GET.type == tab %}active{% endif %}{% if not request.GET.type and tab == 'normalized' %}active{% endif %}">
+				<a href="?type={{tab}}" data-type="{{tab}}">{{tab|title}}</a>
+			</li>
+		{% endfor %}
+	</ul>
+	<ul class="object-list cls_tab_content" id="normalized">
+		{% for institute in page %}
+				<div class="string-name">
+					<li><a href="javascript:void(0)" data-for="#">{{ institute.content }}</a></li>
+					<p>{{ institute.no_of_matches}} Matches Found</p>
+				</div>
+		{% endfor %}
+		{% include 'partials/pagination.html' %}
+	</ul>
+{% endblock tabs %}

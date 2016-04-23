@@ -1,1 +1,20 @@
 {% extends 'layout/base.html' %}
+
+{% block layout %}
+<div class="content">
+	<div class="container">
+		<div class="row">
+			<div class="eight columns">
+				{% block tabs %}
+					{% include 'partials/tabs.html' %}
+				{% endblock tabs %}
+			</div>
+			<div class="four columns">
+				{% block tabs %}
+					{% include 'partials/string_info.html' %}
+				{% endblock tabs %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock layout %} 

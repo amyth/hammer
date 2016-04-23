@@ -37,6 +37,7 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_cron',
 ]
 
 HAMMER_APPS = [
@@ -84,8 +85,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'hammer',
+	'USER': 'root', ## Change in prod
+	'PASSWORD': 'qwerty',
+	'HOST': 'localhost'
     }
 }
 
@@ -132,3 +136,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 ## Authentication
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+MINMATCH_PERCENT = 89
+
+## Pagination
+PAGINATION_STEP = 10

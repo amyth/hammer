@@ -1,0 +1,43 @@
+{% load hammer_filters %}
+
+<div class="paginate">	
+	<span class="prev-arrow">
+	{% if page.has_previous %}
+		{% with page_value=page.number|add:"-1" %}
+			{% with page_str=page_value|pageno %}
+			<a href="{{request.GET|handle_get_params:page_str}}"><<  </a>
+			{% endwith %}
+		{% endwith %}
+	{% endif %}
+	</span>
+
+	<span class="page-list">
+	{% with min=page.number|add:"-6" max=page.number|add:"6" %}
+		{% for x in paginator.page_range %}
+			{% if x > min and x < page.number %}
+				{% with page_str=x|pageno %}
+					<a href="{{request.GET|handle_get_params:page_str}}">{{ x }}</a>
+				{% endwith %}
+			{% endif %}
+		{% endfor %}
+		{{page.number}}
+		{% for x in paginator.page_range %}
+			{% if x > page.number and x < max %}
+				{% with page_str=x|pageno %}
+					<a href="{{request.GET|handle_get_params:page_str}}">{{ x }}</a>
+				{% endwith %}
+			{% endif %}
+		{% endfor %}
+	{% endwith %}
+	</span>
+
+	<span class="next-arrow">
+	{% if page.has_next %}
+		{% with page_value=page.number|add:"1" %}
+			{% with page_str=page_value|pageno %}
+				<a href="{{request.GET|handle_get_params:page_str}}">  >></a>
+			{% endwith %}
+		{% endwith %}
+	{% endif %}
+	</span>
+</div>

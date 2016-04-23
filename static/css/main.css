@@ -74,9 +74,9 @@ a:hover {
 .notifications {
     width: 350px;
     position: fixed;
-    top: 30;
-    right: 50;
-    padding: 15px;
+    top: 60px;
+    right: 500;
+    padding: 12px;
     border-radius: 3px;
     border: 1px dashed #ddd;
     font-size: 1.2rem;
@@ -143,4 +143,74 @@ form.upload_form {
 a.navbar-link.icon {
     margin-top: 7px;
     display: inline-block;
+}
+a.cross {
+    float:right;
+}
+
+.tab-list {
+    border-bottom: 1px solid #00b8e6;
+    width:98.50%;
+    min-height: 40px;
+}
+
+.tab-list li{
+    list-style: outside none none;
+    display: inline-block;
+    padding-right: 20px;
+    font-size: 18px;
+    margin-bottom: 0px;
+    min-height: 40px;
+    margin-top: 10px;
+}
+.tab-list a:hover{
+    color: #ff0000;
+}
+
+.tab-list a{
+    color: #00b8e6;
+    text-decoration: none;
+}
+
+.tab-list .active{
+    border-bottom: 4px solid #00b300;
+
+}
+
+.object-list li{
+    list-style: outside none none;
+}
+
+.paginate {
+    width: 60%;
+    margin-left: 130px;
+    margin-top: 50px;
+}
+
+.paginate span {
+    padding-right:15px; 
+}
+
+.paginate a{
+    padding-right: 2px;
+}
+
+.string-name{
+    border-bottom: 1px solid #eee;
+}
+
+.string-name li{
+    margin-top: 5px;
+    margin-bottom: 2px;
+}
+
+.string-name a{
+    text-decoration: none;
+}
+
+
+.string-name p{
+    font-size: 12px;
+    color:#7a7a52;
+    margin-bottom: 2px;
 }

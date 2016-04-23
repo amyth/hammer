@@ -14,6 +14,18 @@ class String(models.Model):
     is_parent = models.BooleanField(default=False)
     is_normalized = models.BooleanField(default=False)
     is_abbreviation = models.BooleanField(default=False)
+    is_processed = models.BooleanField(default=False)
+
+    @property
+    def no_of_matches(self):
+        return self.string_one_set.all().count() + \
+                self.string_two_set.all().count()
+
+    @property
+    def has_match(self):
+        return bool(self.no_of_matches)
+    
+    
 
 
 class Match(models.Model):
