@@ -68,3 +68,9 @@ temp/
 
 ## DB
 db.*
+
+## personal settings file
+config/personal.py
+
+## celery beat schedule file
+celerybeat-schedule.db

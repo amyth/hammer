@@ -37,7 +37,7 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_cron',
+    #'django_cron',
 ]
 
 HAMMER_APPS = [
@@ -140,3 +140,9 @@ MINMATCH_PERCENT = 89
 
 ## Pagination
 PAGINATION_STEP = 10
+
+## Override settings from personal if any
+try:
+    from .personal import *
+except Exception:
+    pass
