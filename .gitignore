@@ -72,5 +72,6 @@ db.*
 ## personal settings file
 config/personal.py
 
-## celery beat schedule file
+## Celery
+celerybeat.pid
 celerybeat-schedule.db

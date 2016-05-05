@@ -140,6 +140,11 @@ a.navbar-link.icon span {
 form.upload_form {
     display:none;
 }
+
+form.upload_raw_form {
+    display:none;
+}
+
 a.navbar-link.icon {
     margin-top: 7px;
     display: inline-block;
@@ -204,7 +209,7 @@ a.cross {
     margin-bottom: 2px;
 }
 
-.string-name a{
+.cls_tab_content a{
     text-decoration: none;
 }
 
@@ -225,4 +230,140 @@ a.cross {
 
 .string-info input{
      margin-bottom: 1px;
+}
+
+.right_container { 
+    height: 670px;
+    width: 500px;
+}
+
+
+.string-info-container { 
+    border-bottom: 1px solid #eee;
+    height: 270px;
+    width: 470px;
+    margin-left: 0px;
+    margin-top: 10px;
+}
+
+.string-info-container input{ 
+    margin-bottom: 8px;
+    height: 30px;
+}
+
+.string-info-container input#content{ 
+    width:250px;
+}
+
+.string-info-container select#is_parent{ 
+    border-width: 0 0 1px;
+    height: 28px;
+    margin-bottom: 8px;
+    width: 273px;
+}
+
+.string-info-container select#is_normalized{ 
+    border-width: 0 0 1px;
+    height: 28px;
+    margin-bottom: 8px;
+    width: 240px;
+}
+
+.string-info-container input#normalized_id{ 
+    width:236px;
+}
+
+.string-info-container input#save_button{ 
+    width:60px;
+    height:35px;
+    margin-top: 10px;
+    padding-top: 0px;
+
+}
+
+
+
+.match-list-container { 
+    margin-left: 0px;
+    margin-top: 20px;
+    width: 430px;
+}
+
+.match-list-container h3 { 
+    font-size: 16px;
+    display:inline;
+    width:400px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+
+}
+
+.match-list-container h5 { 
+    margin-bottom: 10px;
+}
+
+.match-list-container h6 { 
+    display:inline;
+    color: #7a7a52;
+    font-size: 12px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+.match-list-container h4 { 
+    display:inline;
+    width:30px;
+    color: #7a7a52;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.match-list-container p { 
+    display:inline;
+    width:40px;
+    color: #7a7a52;
+    font-size: 12px;
+    /*margin-bottom: 10px;*/
+}
+
+.match-list-container ul { 
+    list-style:inside none none;
+}
+
+.match-list-container button { 
+    /*display:block;*/
+    height: 25px;
+    width: 70px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 4px;
+}
+
+.match-list-container input#approve {
+    margin-right: 10px;
+    /*display:block;*/
+ }
+
+.match-list-container input#discard {
+    margin-left: 50px;
+    margin-right: 10px;
+ }
+
+.match-list-container input#skip {
+    margin-left: 50px;
+    margin-right: 10px;
+ }
+
+.match-list-container input#savebutton {
+    height: 26px;
+    padding-left: 15px;
+    padding-right: 15px;
+ }
+
+.match-list {
+    margin-bottom: 8px;
+}
+
+.check-box {
+    margin-top: 5px;
 }

@@ -3,17 +3,22 @@
 {% block tabs %}
 	<ul class="tab-list">
 		{% for tab in tabtypes %}
-			<li class="cls_tab {% if request.GET.type == tab %}active{% endif %}{% if not request.GET.type and tab == 'normalized' %}active{% endif %}">
+			<li class="cls_tab {% if request.GET.type == tab %}active{% endif %}{% if not request.GET.type and tab == 'normalized institutes' %}active{% endif %}">
 				<a href="?type={{tab}}" data-type="{{tab}}">{{tab|title}}</a>
 			</li>
 		{% endfor %}
 	</ul>
 	<ul class="object-list cls_tab_content" id="normalized">
-		{% for institute in page %}
+		{% for result in page %}
+			{# <a href="javascript:void(0)" id="{{ institute.id }}" class="cls_string_name" data-name="{{ institute.name }}" data-parent="{{ institute.is_parent}}" data-norm="{{ institute.is_normalized}}" data-normid="{{ institute.normalized_id}}" data-strid="{{ institute.id}}"> #}
+			<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name">
 				<div class="string-name">
-					<li><a href="javascript:void(0)" data-for="#">{{ institute.content }}</a></li>
-					<p>{{ institute.no_of_matches}} Matches Found</p>
+					<li>{{ result.name }}</li>
+					{% if result.no_of_matches %}
+					<p>{{ result.no_of_matches}} Matches Found</p>
+					{% endif %}
 				</div>
+			</a>
 		{% endfor %}
 		{% include 'partials/pagination.html' %}
 	</ul>

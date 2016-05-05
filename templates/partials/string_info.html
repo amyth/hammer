@@ -1,34 +1,8 @@
 
-
 {% block string_info %}
-    <div class="container">
-        <div class="string-info-container">
-            <h5>String Details</h5>
-            <form class="string-info" method="POST" action="">
-                {% csrf_token %}
-                <!-- {{ upload_form }} -->
-                String Name: <input type="text" name="content" value="True"><br>
-                Is Parent: <input type="text" name="is_parent" value="True"readonly><br>
-                Is Normalized: <input type="text" name="is_normalized" value="True"><br>
-                Normalized ID: <input type="text" name="normalized_id" value="True"><br>
-            </form>
-        </div>
-        <div class="match-list-container">
-            <ul class="match-list">
-                <!-- {% if has_match %} -->
-                    <li class=" ">
-                        <p>abcd</p>
-                    </li>
-                    <li class=" ">
-                        <p>abcd</p>
-                    </li>
-                    <li class=" "><p>abcd</p></li>
-                    <li class=" "><p>abcd</p></li>
-                    <li class=" "><p>abcd</p></li>
-                    <li class=" "><p>abcd</p></li>
-                    <li class=" "><p>abcd</p></li>
-                <!-- {% endif %} -->
-            </ul>
+    <div class ="right_container">
+        <div class="match-list-container" id="match_list_container">
+        
         </div>
     </div>
 {% endblock string_info %}

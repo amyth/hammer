@@ -19,7 +19,7 @@ def handle_get_params(value, arg):
 
 
 def pageno(value):
-	print "The value is ", value
+	# print "The value is ", value
 	return "page=%s" % (value)
 
 

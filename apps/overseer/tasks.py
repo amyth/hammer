@@ -20,59 +20,95 @@ class CreateBulkInstitutes(Task):
         """
 
         for obj in data:
-            name = obj.get('inc')
-            normalized_id = obj.get('ins')
-            exists = models.Institute.objects.filter(content=name).exists()
-            if not exists:
-                try:
-                    if normalized_id:
-                        models.Institute.objects.create(
-                                content=name,
-                                normalized_id=normalized_id,
-                                is_normalized=True,
-                                is_parent=True)
-                    else:
-                        models.Institute.objects.create(
-                            content=name)
-                except Exception as err:
-                    #TODO: Log the error once logging is in place.
-                    ##     See T5 for more information.
-                    print "Could not create institute: %s, data: %s" % (
-                            str(err), obj)
+            models.NormalizedInstitute.objects.create(
+                name = obj.get('name'),
+                city = obj.get('location.city',''),
+                state = obj.get('location.state',''),
+                country = obj.get('location.country',''),
+                established = obj.get('established',0))
 
 
-class UpdateMatches(Task):
+class CreateMatches(Task):
     """
-    Updates matches if any unprocessed string is present in
-    the database
+    Creates match objects based on the given json data.
     """
 
-    def run(self, *args, **kwargs):
+    def run(self, data, *args, **kwargs):
+        """
+        For each entry found in data, we try creating a new
+        match object.
+        """
 
-        to_process = models.Institute.objects.filter(
-                    is_normalized = False,
-                    is_processed = False)
+        for obj in data:
 
-        all_institutes = models.Institute.objects.all()
+            s = obj.get('inc')
 
-        for x in to_process:
-            xcon = utils.clean_string(x.content)
-            for y in all_institutes:
-                ycon = utils.clean_string(y.content)
+            new_unnorm = models.UnnormalizedInstitute.objects.filter(name = s)
 
-                if not (x == y):
-                    match_percent = hammerlib.spellmatch(xcon, ycon)
+            if not new_unnorm:
+                models.UnnormalizedInstitute.objects.create(
+                    name = s)
 
-                    if match_percent > settings.MINMATCH_PERCENT:
-                        m = models.Match.objects.filter(Q(
-                            string_two = x, string_one = y) | Q(
-                            string_two = y, string_one = x))
+        all_unnormalized = models.UnnormalizedInstitute.objects.all()
+        all_normalized = models.NormalizedInstitute.objects.all()
 
-                        if not m.exists():
-                            models.Match.objects.create(
-                                string_one = x,
-                                string_two = y,
-                                match_percentile = match_percent)
+        # x_name = utils.clean_string(x)
+        for y in all_normalized:
+        
+            y_name = utils.clean_string(y.name)
+            
+            for x in all_unnormalized:
+                x_name = utils.clean_string(x.name)    
+                match_percent = hammerlib.spellmatch(x_name, y_name)
 
-            x.is_processed = True
-            x.save()
+                if match_percent > settings.MINMATCH_PERCENT:
+                    m = models.InstituteMatches.objects.filter(
+                        normalized_inst__pk = y.pk, unnormalized_inst__pk = x.pk)
+
+                    if not m.exists():
+                        models.InstituteMatches.objects.create(
+                            normalized_inst = y,
+                            unnormalized_inst = x,
+                            match_score = match_percent,
+                            status = 1)
+
+                        x.status = 1
+                        x.save()
+
+
+
+# class UpdateMatches(Task):
+#     """
+#     Updates matches if any unprocessed string is present in
+#     the database
+#     """
+
+    # def run(self, *args, **kwargs):
+
+    #     to_process = models.NormalizedInstitute.objects.filter(
+    #                 is_normalized = False,
+    #                 is_processed = False)
+
+    #     all_institutes = models.NormalizedInstitute.objects.all()
+
+    #     for x in to_process:
+    #         xcon = utils.clean_string(x.content)
+    #         for y in all_institutes:
+    #             ycon = utils.clean_string(y.content)
+
+    #             if not (x.pk == y.pk):
+    #                 match_percent = hammerlib.spellmatch(xcon, ycon)
+
+    #                 if match_percent > settings.MINMATCH_PERCENT:
+    #                     m = models.Match.objects.filter(Q(
+    #                         string_two__pk = x.pk, string_one__pk = y.pk) | Q(
+    #                         string_two__pk = y.pk, string_one__pk = x.pk))
+
+    #                     if not m.exists():
+    #                         models.Match.objects.create(
+    #                             string_one = x,
+    #                             string_two = y,
+    #                             match_percentile = match_percent)
+
+    #         x.is_processed = True
+    #         x.save()

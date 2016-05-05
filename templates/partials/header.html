@@ -1,23 +1,37 @@
 <div class="header">
     <nav class="navbar">
         <div class="container">
+            
             <ul class="navbar-list icons-nav u-pull-left">
                 {% if upload_form %}
                 <li class="navbar-item">
-                <form class="upload_form" method="POST" action="{% url 'overseer:submit-file' %}" enctype="multipart/form-data">
+                    <form class="upload_form" method="POST" action="{% url 'overseer:submit-file' %}" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ upload_form }}
                     </form>
                     <a class="navbar-link icon" href="#" id="upload_link"><span class="iconicfill-cloud-upload"></span></a>
                 </li>
-                {% endif %}
+                {% endif %} 
             </ul>
+            
+            <ul class="navbar-list icons-nav u-pull-left">
+                {% if upload_form %}
+                <li class="navbar-item">
+                    <form class="upload_raw_form" method="POST" action="{% url 'overseer:submit-raw-file' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ upload_form }}
+                    </form>
+                    <a class="navbar-link icon" href="#" id="raw_upload_link"><span class="iconicfill-cloud-upload"></span></a>
+                </li>
+                {% endif %} 
+            </ul>
+
             <ul class="navbar-list text-nav u-pull-right">
                 {% if user.is_authenticated %}
                 <li class="navbar-item">
                 {{ user.username }}, 
-                <a class="navbar-link" href="{% url 'accounts:logout' %}">
-                        Logout
+                    <a class="navbar-link" href="{% url 'accounts:logout' %}">
+                            Logout
                     </a>
                 </li>
                 {% endif %}

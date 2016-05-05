@@ -24,7 +24,7 @@ app.conf.CELERYBEAT_SCHEDULE = {
     # Executes at midnight
     'update-matches': {
         'task': 'apps.overseer.tasks.UpdateMatches',
-        'schedule': crontab(hour=12, minute=7),
+        'schedule': crontab(hour=0, minute=35),
     },
 }
 app.conf.CELERY_TIMEZONE = 'Asia/Kolkata'
