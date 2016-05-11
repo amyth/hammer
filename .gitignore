@@ -75,3 +75,6 @@ config/personal.py
 ## celery
 celerybeat.pid
 celerybeat-schedule.db
+
+##migrations
+migrations/

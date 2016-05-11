@@ -72,43 +72,9 @@ class CreateMatches(Task):
                             match_score = match_percent,
                             status = 1)
 
+                        normalized_ins = models.NormalizedInstitute.objects.get(pk = y.pk)
+                        normalized_ins.no_of_matches = normalized_ins.no_of_matches + 1
+                        normalized_ins.save()
+                        
                         x.status = 1
                         x.save()
-
-
-
-# class UpdateMatches(Task):
-#     """
-#     Updates matches if any unprocessed string is present in
-#     the database
-#     """
-
-    # def run(self, *args, **kwargs):
-
-    #     to_process = models.NormalizedInstitute.objects.filter(
-    #                 is_normalized = False,
-    #                 is_processed = False)
-
-    #     all_institutes = models.NormalizedInstitute.objects.all()
-
-    #     for x in to_process:
-    #         xcon = utils.clean_string(x.content)
-    #         for y in all_institutes:
-    #             ycon = utils.clean_string(y.content)
-
-    #             if not (x.pk == y.pk):
-    #                 match_percent = hammerlib.spellmatch(xcon, ycon)
-
-    #                 if match_percent > settings.MINMATCH_PERCENT:
-    #                     m = models.Match.objects.filter(Q(
-    #                         string_two__pk = x.pk, string_one__pk = y.pk) | Q(
-    #                         string_two__pk = y.pk, string_one__pk = x.pk))
-
-    #                     if not m.exists():
-    #                         models.Match.objects.create(
-    #                             string_one = x,
-    #                             string_two = y,
-    #                             match_percentile = match_percent)
-
-    #         x.is_processed = True
-    #         x.save()

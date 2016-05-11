@@ -1,0 +1,24 @@
+{% block add_new %}	
+	<div id="myModal" class="modal">
+	  <!-- Modal content -->
+		<div class="modal-content">
+			<span class="close">×</span>
+			{# <p>Some text in the Modal..</p> #}
+			<div class="add-new-form-container">
+				<h4> Add New Institute </h4>
+				<form id="add-new-form" class="add-new-form"action="#" method="POST">
+				{% csrf_token %}
+					<ul>
+						<li><div class="form-field-name">Institute Name :</div><input type="text" id="inst_name" name="inst_name" value=''></input></li>
+						<li><div class="form-field-name">City :</div><input type="text" id="city" name="city" value=''></input></li>
+						<li><div class="form-field-name">State:</div><input type="text" id="state" name="state" value=''></input></li>
+						<li><div class="form-field-name">Country:</div> <input type="text" id="country" name="country" value='India'></input></li>
+						<li><div class="form-field-name">Established Year:</div> <input type="text" id="est" name="est" value=''></input></li>
+						<li><div class="form-field-name">Extra Info:</div> <input type="text" id="extra_info" name="extra_info" value=''></input></li>
+						<li><button class="button-primary" type="submit" id="submit_form">Submit</button></li>
+					</ul>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock add_new %}

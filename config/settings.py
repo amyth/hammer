@@ -37,12 +37,8 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< 47f6dc76bd67fd9f40b594a67d4a41d72e2836d7
-    #'django_cron',
-=======
-    'django_cron',
-    'debug_toolbar',
->>>>>>> Some changes to the flow
+     #'django_cron',
+     'debug_toolbar',
 ]
 
 HAMMER_APPS = [
@@ -144,15 +140,9 @@ LOGIN_REDIRECT_URL = '/'
 MINMATCH_PERCENT = 89
 
 ## Pagination
-PAGINATION_STEP = 10
+PAGINATION_STEP = 15
 
-<<<<<<< 47f6dc76bd67fd9f40b594a67d4a41d72e2836d7
-## Override settings from personal if any
-try:
-    from .personal import *
-except Exception:
-    pass
-=======
+
 if DEBUG:
     DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.versions.VersionsPanel',
@@ -168,4 +158,9 @@ if DEBUG:
     'debug_toolbar.panels.logging.LoggingPanel',
     'debug_toolbar.panels.redirects.RedirectsPanel',
 ]
->>>>>>> Some changes to the flow
+
+## Override settings from personal if any
+try:
+    from .personal import *
+except Exception:
+    pass

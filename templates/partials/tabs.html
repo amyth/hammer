@@ -9,13 +9,31 @@
 		{% endfor %}
 	</ul>
 	<ul class="object-list cls_tab_content" id="normalized">
+
+		<div class="add-new-container">		
+			{% if norm_list == 1 and user_group == 1 %}
+				<a class="add-new icon" href="#" id="add-new"><span class="iconicfill-plus-alt"> Add New</span></a>
+			{% endif %}
+		</div>
 		{% for result in page %}
-			{# <a href="javascript:void(0)" id="{{ institute.id }}" class="cls_string_name" data-name="{{ institute.name }}" data-parent="{{ institute.is_parent}}" data-norm="{{ institute.is_normalized}}" data-normid="{{ institute.normalized_id}}" data-strid="{{ institute.id}}"> #}
-			<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name">
+			{% if norm_list == 1 %}
+				<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name" data-string-type="norm">
+			{% elif norm_list == 2 %}
+				<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name" data-string-type="approved" data-group-id="{{ user_group }}">
+			{% elif norm_list == 3 %}
+				<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name" data-string-type="alias">
+			{% else %}	
+				<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name" data-string-type="unnorm">
+			{% endif %}
 				<div class="string-name">
-					<li>{{ result.name }}</li>
-					{% if result.no_of_matches %}
-					<p>{{ result.no_of_matches}} Matches Found</p>
+					<li>{{ result.name }}</li>	
+					{% if norm_list == 1 %}
+					{# {% if result.no_of_matches %} #}
+						<p>{{ result.no_of_matches}} Matches Found</p>
+					{% elif norm_list == 2 %}
+						<p>{{ result.no_of_approved_matches}} Approved Matches Found</p>
+					{% elif norm_list == 3 %}
+						<p>{{ result.no_of_aliases}} Aliases Found</p>
 					{% endif %}
 				</div>
 			</a>

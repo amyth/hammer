@@ -29,49 +29,150 @@ $(document).on('ready', function(){
 
     $('.right_container').hide();
     $('.cls_string_name').on('click', function(){            
-        var object_id, matches;
+        var object_id, matches, usergroup;
     
         $this = $(this);
         object_id = $this.attr("id");
+        object_string_type = $this.data("string-type");
+        usergroup = $this.data("group-id");
         $('.right_container').show();
         console.log(object_id);
-
-        populateMatches(object_id);
+        if(object_string_type == "norm")
+            populateMatches(object_id);
+        else if (object_string_type == "approved")
+            populateApprovedMatches(object_id, usergroup);
+        else if(object_string_type == "alias")
+            populateAliases(object_id);
     });
 
 
-    $(document).on('click','.match-list-container input#submit_button', function(event){
+    $(document).on('click','.match-list-container input#matches_submit_button', function(event){
         
         event.preventDefault();
         console.log("save clicked");
-        
-        /*var child = $('#matches-list').children();
-        $(child).each(function(){
-            
-            //console.log("Outer Block", child);
-            var inner_child = $(child).children();
-            var the_child = inner_child[3];
-            // console.log("Block", the_child);
-
-            $(the_child).each(function(){
-                var in_child = $(the_child).children();
-                var check_value = 9;
-                // console.log("Inner Block", in_child);
-                if('in_child[0]:radio:checked'){
-                    check_value = 2;
-                }
-                else if('in_child[1]:radio:checked'){
-                    check_value = 3;
-                }
-                else{
-                    check_value = 4;
-                }
-                console.log(check_value);
-            });
-        });*/
 
         matchstrings_form_submit();
     });
+
+    $(document).on('click','.match-list-container input#makealias_submit_button', function(event){
+        
+        event.preventDefault();
+        console.log("save clicked");
+
+        makealias_form_submit();
+    });
+
+    $('.add-new-form').validate({
+        
+        rules:{
+            'inst_name':{
+                required:true,
+                // nameCheck:true,
+                minlength:2,
+                maxlength:150
+            },
+            'city':{
+                required:true,
+                // nameCheck:true,
+                minlength:2,
+                maxlength:50
+            },
+            'state':{
+                required:true,
+                minlength:2,
+                maxlength:50
+            },
+            'country':{
+                required:true,
+                minlength:2,
+                maxlength:50
+            },
+            'est':{
+                required:true
+            },
+            /*'est':{
+                required:true,
+                minlength:6,
+                maxlength:15
+            },*/
+        },
+        messages:{
+            'inst_name':{
+                required:'Institute Name is required',
+                // nameCheck: 'First Name should contain only 3 to 15 alphabets',
+                minlength:'First Name should have atleast 2 characters',
+                maxlength:'First Name should have less than 150 characters'
+            },
+            'city':{
+                required:'City is required',
+                // nameCheck:'Last Name should contain only 3 to 15 alphabets',
+                minlength:'Last Name should have atleast 2 characters',
+                maxlength:'Last Name should have less than 50 characters'
+            },
+            'state':{
+                required:'State is required',
+                minlength:'Last Name should have atleast 2 characters',
+                maxlength:'Last Name should have less than 50 characters'
+            },
+            'country':{
+                required:'Country is required',
+                minlength:'Last Name should have atleast 2 characters',
+                maxlength:'Last Name should have less than 50 characters'
+            },
+            'est':{
+                required:'Established Year is required',
+            },
+        },
+        ignore:[],
+        onfocusout:function(element) {
+            $(element).valid();
+        },
+        highlight:function(el) {
+            $(el).addClass('redborder');
+        },
+
+        unhighlight:function(el){
+            $(el).removeClass('redborder');
+        },
+        invalidHandler: function(event, validator) {
+            console.log(event);
+        },
+        submitHandler: function(form){
+            // funct.ajaxLogin(form);
+            addnew_inst_form_submit();
+            // form.submit();
+        }
+    });
+
+    $(document).on('click', '.add-new', function(event){
+        event.preventDefault();
+        console.log("add new clicked");
+
+        var modal = document.getElementById('myModal');
+        var span = document.getElementsByClassName("close")[0];
+        
+        modal.style.display = "block";
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        $(document).on('click','.add-new-form-container input#submit_form', function(event){        
+            event.preventDefault();
+            // validateAddNewForm();
+            // addnew_inst_form_submit();
+        });
+
+    });
+
+
 });
 
 /**
@@ -87,7 +188,8 @@ function populateMatches(id) {
 
         if (response.length > 0) { 
             $container.html("");
-            $container.append("<h5>Matches</h5>");
+            $container.append($("<h5 id='inst-name'>").text(response[0].norm_string));
+            $container.append("<h5 id='heading-matches'>Matches</h5>");
 
             var f = document.createDocumentFragment();
 
@@ -95,6 +197,11 @@ function populateMatches(id) {
             $(fm).attr('id','match-list-form');
             $(fm).attr('action','#');
             $(fm).attr('method','GET');
+
+
+            var sc = document.createElement('div');
+            $(sc).addClass("matches-list-scroll");
+            $(sc).attr('id','matches-list-scroll'); 
 
             var u = document.createElement('ul');
             $(u).addClass("matches-list");
@@ -115,29 +222,23 @@ function populateMatches(id) {
                 $(c).attr('id','check-box');
                 $(c).attr('data-id',response[i].match.id)
 
-                var ap, di, sk;
-                ap = response[i].match.id + "_" + 2;
-                di = response[i].match.id + "_" + 3;
-                sk = response[i].match.id + "_" + 4;
-                // console.log("name: ", ap);
-
                 var check_1 = document.createElement('input');
                 $(check_1).attr('type','radio');
                 $(check_1).attr('id','approve');
-                $(check_1).attr('data-val',2);
-                $(check_1).attr('name',ap);
+                $(check_1).attr('value',2);
+                $(check_1).attr('name',response[i].match.id);
 
                 var check_2 = document.createElement('input');
                 $(check_2).attr('type','radio');
                 $(check_2).attr('id','discard');
-                $(check_2).attr('data-val',3);
-                $(check_2).attr('name',di);
+                $(check_2).attr('value',3)
+                $(check_2).attr('name',response[i].match.id);
 
                 var check_3 = document.createElement('input');
                 $(check_3).attr('type','radio');
                 $(check_3).attr('id','skip');
-                $(check_3).attr('data-val',4);
-                $(check_3).attr('name',sk);
+                $(check_3).attr('value',4)
+                $(check_3).attr('name',response[i].match.id);
 
                 // $(c).append('<input type="radio" id="approve" data-val="2" name="ap">');
                 $(c).append($(check_1));
@@ -151,11 +252,12 @@ function populateMatches(id) {
 
                 $(d).append($(c));
                 $(u).append($(d));
-                $(fm).append($(u));
+                $(sc).append($(u));
+                $(fm).append($(sc));
                 i++;
             });
             // $(fm).append('<input type="text" id="test_text" class="test_text" value="Game On" name="game">');
-            $(fm).append('<input type="submit" id="submit_button" class="submit_button" value="Save">');
+            $(fm).append('<input type="submit" id="matches_submit_button" class="submit_button" value="Save">');
             f.appendChild(fm);
 
             $container.append(f);
@@ -168,10 +270,161 @@ function populateMatches(id) {
     });
 }
 
+function populateApprovedMatches(id, usergroup) {
+    var url = "/get_approved_matches/?s=" + id;
+    $.get(url, function(response) {
+        $container = $('.match-list-container');
+
+        var i = 0;
+
+        if (response.length > 0) { 
+            $container.html("");
+            
+            $container.append($("<h5 id='inst-name'>").text(response[0].norm_string));
+            $container.append("<h5 id='heading-matches'>Approved Matches</h5>");
+
+            var f = document.createDocumentFragment();
+
+            var fm = document.createElement('form');
+            $(fm).attr('id','makealias-list-form');
+            $(fm).attr('action','#');
+            $(fm).attr('method','GET');
+
+            var sc = document.createElement('div');
+            $(sc).addClass("matches-list-scroll");
+            $(sc).attr('id','matches-list-scroll'); 
+
+            var u = document.createElement('ul');
+            $(u).addClass("matches-list");
+            $(u).attr('id','matches-list'); 
+            
+            $.each(response,function(){ 
+
+                var d = document.createElement('li');
+                $(d).addClass("match-list");
+                $(d).attr('id','match-list'); 
+            
+                $(d).append($("<h4>").text(response[i].match_percentile));
+                $(d).append($("<h6>").text("%"));
+                $(d).append($("<h3>").text(response[i].match.content));
+
+                var c = document.createElement('div');
+                $(c).addClass("check-box");
+                $(c).attr('id','check-box');
+                $(c).attr('data-id',response[i].match.id)
+
+                // Only add a checkbox if the user has required permission
+                if(usergroup !== 'undefined' && usergroup && usergroup == 1) {
+                    var check_1 = document.createElement('input');
+                    $(check_1).attr('type','checkbox');
+                    $(check_1).attr('id','approve');
+                    $(check_1).attr('value',2);
+                    $(check_1).attr('name',response[i].match.id);                
+                    $(c).append($(check_1));
+                    $(c).append($("<p>").text("Make Alias"));
+                    $(d).append($(c));
+                }
+
+
+                $(u).append($(d));
+                $(sc).append($(u));
+                $(fm).append($(sc));
+                i++;
+            });
+            if(usergroup !== 'undefined' && usergroup && usergroup == 1){
+                $(fm).append('<input type="submit" id="makealias_submit_button" class="makealias_submit_button" value="Save">');
+            }   
+
+            f.appendChild(fm);
+            $container.append(f);    
+            
+        } else {
+            $container.html("");
+            $container.append("<h5>No Match Found</h5>");
+        }
+    });
+}
+
+
+function populateAliases(id) {
+    var url = "/get_aliases/?s=" + id;
+    $.get(url, function(response) {
+        $container = $('.match-list-container');
+
+        var i = 0;
+
+        if (response.length > 0) { 
+            $container.html("");
+            
+            $container.append($("<h5 id='inst-name'>").text(response[0].norm_string));
+            $container.append("<h5 id='heading-matches'>Aliases</h5>");
+
+            var f = document.createDocumentFragment();
+
+            var fm = document.createElement('form');
+            $(fm).attr('id','alias-list-form');
+            $(fm).attr('action','#');
+            $(fm).attr('method','GET');
+
+            var sc = document.createElement('div');
+            $(sc).addClass("matches-list-scroll");
+            $(sc).attr('id','matches-list-scroll'); 
+
+            var u = document.createElement('ul');
+            $(u).addClass("matches-list");
+            $(u).attr('id','matches-list'); 
+            
+            $.each(response,function(){ 
+
+                var d = document.createElement('li');
+                $(d).addClass("match-list");
+                $(d).attr('id','match-list'); 
+                $(d).append($("<h3>").text(response[i].match.content));
+
+                $(u).append($(d));
+                $(sc).append($(u));
+                $(fm).append($(sc));
+                i++;
+            });
+
+            f.appendChild(fm);
+
+            $container.append(f);    
+            
+        } else {
+            $container.html("");
+            $container.append("<h5>No Match Found</h5>");
+        }
+    });
+}
+
+
+
+function addnew_inst_form_submit() {
+    // console.log("string info submit is working!") // sanity check
+    var dt = $("#add-new-form").serialize();
+    // console.log("Data: ", dt);
+
+    $.ajax({
+           type: "POST",
+           url: "/addnew_inst_form_submit/",
+           data: $("#add-new-form").serialize(), // serializes the form's elements.
+           // dataType: 'json',
+
+           success: function(data){
+                // alert("Changes Saved Succesfully");
+                if(alert("Changes Saved Succesfully!!")){}
+                else
+                    window.location.reload(); 
+                console.log("save succesful");    
+           }
+    });
+}
+
 function matchstrings_form_submit() {
-    console.log("string info submit is working!") // sanity check
+    // console.log("string info submit is working!") // sanity check
     var dt = $("#match-list-form").serialize();
-    console.log("Data: ", dt);
+    // console.log("Data: ", dt);
 
     $.ajax({
            type: "GET",
@@ -180,8 +433,114 @@ function matchstrings_form_submit() {
            // dataType: 'json',
 
            success: function(data){
-               console.log("save succesful");    
+                // alert("Changes Saved Succesfully");
+                if(alert("Changes Saved Succesfully!!")){}
+                else
+                    window.location.reload(); 
+                console.log("save succesful");    
            }
     });
 }
 
+function makealias_form_submit() {
+    // console.log("string info submit is working!") // sanity check
+    var dt = $("#makealias-list-form").serialize();
+    // console.log("Data: ", dt);
+
+    $.ajax({
+           type: "GET",
+           url: "/makealias_form_submit/",
+           data: $("#makealias-list-form").serialize(), // serializes the form's elements.
+           // dataType: 'json',
+
+           success: function(data){
+                // alert("Changes Saved Succesfully");
+                if(alert("Changes Saved Succesfully!!")){}
+                else
+                    window.location.reload(); 
+                console.log("save succesful");    
+           }
+    });
+}
+
+/*/*function validateAddNewForm(){
+    
+    $('.add-new-form').validate({
+        
+        rules:{
+            'inst_name':{
+                required:true,
+                // nameCheck:true,
+                minlength:2,
+                maxlength:150
+            },
+            'city':{
+                required:true,
+                // nameCheck:true,
+                minlength:2,
+                maxlength:50
+            },
+            'state':{
+                required:true,
+                minlength:2,
+                maxlength:50
+            },
+            'country':{
+                required:true,
+                minlength:2,
+                maxlength:50
+            },
+            'est':{
+                required:true
+            },
+            /*'est':{
+                required:true,
+                minlength:6,
+                maxlength:15
+            },
+        },
+        messages:{
+            'inst_name':{
+                required:'Institute Name is required',
+                // nameCheck: 'First Name should contain only 3 to 15 alphabets',
+                minlength:'First Name should have atleast 2 characters',
+                maxlength:'First Name should have less than 150 characters'
+            },
+            'city':{
+                required:'City is required',
+                // nameCheck:'Last Name should contain only 3 to 15 alphabets',
+                minlength:'Last Name should have atleast 2 characters',
+                maxlength:'Last Name should have less than 50 characters'
+            },
+            'state':{
+                required:'State is required',
+                minlength:'Last Name should have atleast 2 characters',
+                maxlength:'Last Name should have less than 50 characters'
+            },
+            'country':{
+                required:'Country is required',
+                minlength:'Last Name should have atleast 2 characters',
+                maxlength:'Last Name should have less than 50 characters'
+            },
+            'est':{
+                required:'Established Year is required',
+            },
+        },
+        ignore:[],
+        onfocusout:function(element) {
+            $(element).valid();
+        },
+        highlight:function(el) {
+            $(el).addClass('redborder');
+        },
+
+        unhighlight:function(el){
+            $(el).removeClass('redborder');
+        },
+        submitHandler: function(form){
+            // funct.ajaxLogin(form);
+            addnew_inst_form_submit();
+            // form.submit();
+        }
+    });
+}*/

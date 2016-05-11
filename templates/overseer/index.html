@@ -5,6 +5,9 @@
 	<div class="container">
 		<div class="row">
 			<div class="eight columns">
+				{% block add_new %}
+					{% include 'partials/add_new_form.html' %}
+				{% endblock add_new %}
 				{% block tabs %}
 					{% include 'partials/tabs.html' %}
 				{% endblock tabs %}

@@ -157,6 +157,7 @@ a.cross {
     border-bottom: 1px solid #00b8e6;
     width:98.50%;
     min-height: 40px;
+    margin-bottom: 5px;
 }
 
 .tab-list li{
@@ -302,6 +303,12 @@ a.cross {
     margin-bottom: 10px;
 }
 
+.match-list-container h5#heading-matches{ 
+    margin-bottom: 10px;
+    color: #00b8e6;
+}
+
+
 .match-list-container h6 { 
     display:inline;
     color: #7a7a52;
@@ -354,10 +361,17 @@ a.cross {
     margin-right: 10px;
  }
 
+
+
 .match-list-container input#savebutton {
     height: 26px;
     padding-left: 15px;
     padding-right: 15px;
+ }
+
+
+.match-list-container input#matches_submit_button {
+    margin-top: 20px;
  }
 
 .match-list {
@@ -366,4 +380,98 @@ a.cross {
 
 .check-box {
     margin-top: 5px;
+}
+
+.add-new-container {
+    height:25px;
+}
+
+.add-new-container a{
+    /*height:30px;*/
+    margin-left: 460px;
+    font-size: 20px;
+    color: #000000;
+}
+
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    margin-top: -65px;
+    /*padding-left:35px;
+    padding-top:25px;
+    padding-left: 20px;
+    padding-bottom: 20px;*/
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+}
+
+/* The Close Button */
+.modal-content .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.add-new-form-container li{
+    list-style: outside none none;
+}
+
+.add-new-form-container input{
+    width:300px;
+}
+
+.add-new-form-container button#submit_form {
+    margin-left: 200px;
+    width: 138px;
+}
+
+.form-field-name{
+    width: 130px;
+    display: inline-block;
+}
+
+.approved-container p,input{
+    display: inline-block;
+}
+
+.approved-container p{
+    width: 400px;
+}
+
+.approved-container input{
+    height: 26px;
+    margin-bottom: 0px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.matches-list-scroll {
+    max-height: 712px;
+    overflow: auto;
 }
