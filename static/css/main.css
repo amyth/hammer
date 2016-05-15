@@ -28,6 +28,10 @@ strong {
     margin: 0 auto;
 }
 
+.header{
+    height: 100px;
+}
+
 .blue {
     color: #007EE5;
 }
@@ -105,8 +109,9 @@ a:hover {
     margin-bottom: 0;
 }
 nav.navbar {
-    max-height: 60px;
+    /*max-height: 60px;*/
     border-bottom: 1px solid #eee;
+    height: 80px;
 }
 li.navbar-item {
     text-transform: uppercase;
@@ -282,7 +287,15 @@ a.cross {
 
 }
 
+.match-text-container{
+    width: 187px;
+    display: inline-block;
+}
 
+.match-buttons{
+    width:364px;
+    display: inline-block;
+}
 
 .match-list-container { 
     margin-left: 0px;
@@ -296,6 +309,7 @@ a.cross {
     width:400px;
     margin-top: 10px;
     margin-bottom: 0px;
+    margin-left: 20px;
 
 }
 
@@ -314,7 +328,7 @@ a.cross {
     color: #7a7a52;
     font-size: 12px;
     margin-bottom: 10px;
-    margin-right: 10px;
+    margin-right: 2px;
 }
 
 .match-list-container h4 { 
@@ -384,11 +398,12 @@ a.cross {
 
 .add-new-container {
     height:25px;
+    margin-top: 12px;
 }
 
 .add-new-container a{
     /*height:30px;*/
-    margin-left: 460px;
+    margin-left: 450px;
     font-size: 20px;
     color: #000000;
 }
@@ -413,10 +428,6 @@ a.cross {
     background-color: #fefefe;
     margin: auto;
     margin-top: -65px;
-    /*padding-left:35px;
-    padding-top:25px;
-    padding-left: 20px;
-    padding-bottom: 20px;*/
     padding: 20px;
     border: 1px solid #888;
     width: 40%;
@@ -474,4 +485,32 @@ a.cross {
 .matches-list-scroll {
     max-height: 712px;
     overflow: auto;
+}
+
+.upload_norm_data {
+    display: inline-block;
+    width: 30px;
+}
+
+.upload_unnorm_data {
+    display: inline-block;
+    width: 30px;
+}
+
+.search-box {
+    display: inline-block;
+    height: 38px;
+    margin-left: 38px;
+    margin-top: 10px;
+    width: 525px;
+}
+
+.search-box input#search_text{
+    width: 400px;
+    color: #989898;
+}
+.logout{
+    display: inline-block;
+    width: 150px;
+    margin-left: 170px;
 }

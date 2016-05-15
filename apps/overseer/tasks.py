@@ -48,11 +48,14 @@ class CreateMatches(Task):
             if not new_unnorm:
                 models.UnnormalizedInstitute.objects.create(
                     name = s)
+            else:
+                u = models.UnnormalizedInstitute.objects.get(name = s)
+                u.frequency = u.frequency + 1
+                u.save()
 
         all_unnormalized = models.UnnormalizedInstitute.objects.all()
         all_normalized = models.NormalizedInstitute.objects.all()
 
-        # x_name = utils.clean_string(x)
         for y in all_normalized:
         
             y_name = utils.clean_string(y.name)
@@ -72,9 +75,15 @@ class CreateMatches(Task):
                             match_score = match_percent,
                             status = 1)
 
+                        unnorm_ins = models.UnnormalizedInstitute.objects.get(pk = x.pk)
+                        unnorm_ins.no_of_matches = unnorm_ins.no_of_matches + 1
+                        unnorm_ins.status = 1
+                        unnorm_ins.save()
+
                         normalized_ins = models.NormalizedInstitute.objects.get(pk = y.pk)
                         normalized_ins.no_of_matches = normalized_ins.no_of_matches + 1
+                        normalized_ins.cummulative_matches = normalized_ins.cummulative_matches + unnorm_ins.frequency
                         normalized_ins.save()
-                        
-                        x.status = 1
-                        x.save()
+
+                        # x.status = 1
+                        # x.save()

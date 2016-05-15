@@ -1,8 +1,6 @@
-# from django.db.models import Q
+from django.db.models import Q
 from django.conf import settings
 from django.contrib import messages
-# from django.contrib.auth.models import User
-# from django.contrib.auth.models import Group
 
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse_lazy
@@ -32,50 +30,71 @@ class Index(TemplateView):
 
     template_name = 'overseer/index.html'
     typemap = {
-        'normalized institutes': {'model':NormalizedInstitute, 'filters': {'no_of_matches__gt': 0}, 'order': '-no_of_matches'},
-        'approved matches': {'model':NormalizedInstitute, 'filters': {'no_of_approved_matches__gt': 0}, 'order': '-no_of_approved_matches'},
-        'aliases': {'model':NormalizedInstitute, 'filters': {'no_of_aliases__gt': 0},'order':'-no_of_aliases'},
-        'unnormalized': {'model':UnnormalizedInstitute, 'filters':{'status':0}}
+        'matches': {'model':NormalizedInstitute, 'filters': {'cummulative_matches__gt': 0}, 'order': '-cummulative_matches'},
+        'approved matches': {'model':NormalizedInstitute, 'filters': {'no_of_approved_matches__gt': 0},  'order': '-no_of_approved_matches'},
+        'reverse matches': {'model':UnnormalizedInstitute, 'filters': {'no_of_matches__gt': 0},  'order':'-frequency'},
+        'unmatched': {'model':UnnormalizedInstitute, 'filters':{'no_of_matches': 0},  'order':'-frequency'},
     }
+
 
     def get_context_data(self, **kwargs):
         norm_list = 0
         user_group = 0
         r = self.request.user.groups.all()[0].id
-        
-        print "r = ", r
+
         if r == 2:
-            print "Works..!!"
             user_group = 2
         else:
             user_group = 1
 
-        print "user group", user_group
-
-        context = super(Index, self).get_context_data(**kwargs)
-        context['upload_form'] = UploadJsonDataForm
-
         ## add paginated institute objects to the context
 
         page_no = self.request.GET.get('page', 1)
-        list_type = self.request.GET.get('type', 'normalized institutes')
+        
+        searched_query = self.request.GET
+        list_type = self.request.GET.get('type', 'matches')
+        searched_string = self.request.GET.get('searched', ' ')
+
+        print "list_type = ", list_type
+        print "searched_string = ", searched_string
+                
+        context = super(Index, self).get_context_data(**kwargs)
+        context['upload_form'] = UploadJsonDataForm
+
+        flag = 0
+
+        if len(searched_query) > 1:
+            flag = 1
+
         _type = self.typemap.get(list_type)
+
         model = _type.get('model')
         filters = _type.get('filters')
         order = _type.get('order')
 
-        if filters and order:
+        if flag == 1:
+            if list_type == 'matches':
+                results = model.objects.order_by(order).filter(name__icontains= searched_string)
+                # print "flag is equal to 1"
+            elif list_type == 'approved matches':
+                results = model.objects.order_by(order).filter(Q(name__icontains= searched_string ) & Q(no_of_approved_matches__gt = 0))
+            elif list_type == 'reverse matches':
+                results = model.objects.order_by(order).filter(Q(name__icontains= searched_string ) & Q(no_of_matches__gt = 0))
+            else:
+                results = model.objects.order_by(order).filter(name__icontains= searched_string )
+
+        elif filters and order:
             results = model.objects.order_by(order).filter(**filters)
         elif filters:
             results = model.objects.filter(**filters)
         else:
             results = model.objects.all()
         
-        if list_type == 'normalized institutes':
+        if list_type == 'matches':
             norm_list = 1
         elif list_type == 'approved matches':
             norm_list = 2
-        elif list_type == 'aliases':
+        elif list_type == 'reverse matches':
             norm_list = 3
         else:
             norm_list = 4
@@ -134,18 +153,27 @@ class UploadRawDataView(FormView):
         return super(UploadRawDataView, self).form_valid(form)
 
 
-
-
-
 def get_matches(request):
     string_id = request.GET.get('s')
     try:
         matches = NormalizedInstitute.objects.get(id=string_id).get_matches()
-        # print matches
+
     except (NormalizedInstitute.DoesNotExist, Exception) as err:
         #TODO: Log the error
         matches = []
     return jsonresponse(matches)
+
+
+def get_normalized_matches(request):
+    string_id = request.GET.get('s')
+    try:
+        matches = UnnormalizedInstitute.objects.get(id=string_id).get_matches()
+
+    except (UnnormalizedInstitute.DoesNotExist, Exception) as err:
+        #TODO: Log the error
+        matches = []
+    return jsonresponse(matches)
+
 
 
 def get_approved_matches(request):
@@ -154,7 +182,7 @@ def get_approved_matches(request):
 
     try:
         appr_matches = NormalizedInstitute.objects.get(id=string_id).get_approved_matches()
-        # print matches
+
     except (NormalizedInstitute.DoesNotExist, Exception) as err:
         #TODO: Log the error
         appr_matches = []
@@ -166,7 +194,7 @@ def get_aliases(request):
 
     try:
         aliases = NormalizedInstitute.objects.get(id=string_id).get_approved_aliases()
-        # print matches
+
     except (NormalizedInstitute.DoesNotExist, Exception) as err:
         #TODO: Log the error
         aliases = []
@@ -177,25 +205,25 @@ def matchstrings_form_submit(request):
     if request.method == 'GET':
 
         content = request.GET
-        # print content
 
         for key, value in content.items():
             m_id = key
             m_val = value
 
             match_obj = InstituteMatches.objects.get(id=m_id)
-            # m_val = int(m_val)
+
             match_obj.status = m_val;
             
             normalized_obj = NormalizedInstitute.objects.get(pk = match_obj.normalized_inst.pk)
+            unnormalized_obj = UnnormalizedInstitute.objects.get(pk = match_obj.unnormalized_inst.pk)
+
             normalized_obj.no_of_matches = normalized_obj.no_of_matches - 1;
+            normalized_obj.cummulative_matches = normalized_obj.cummulative_matches - unnormalized_obj.frequency
 
             m_val = int(m_val)
 
             if m_val == 2:
                 normalized_obj.no_of_approved_matches = normalized_obj.no_of_approved_matches + 1;
-
-
 
             normalized_obj.save()
             match_obj.save()
@@ -282,10 +310,7 @@ def addnew_inst_form_submit(request):
         #         country = content['country'],
         #         established = content['est'],
         #         misc = content['extra_info'])
-        #
-        #
-        #
-        #  
+
 
         return HttpResponse(
              json.dumps({'status': 'True'})
@@ -296,3 +321,21 @@ def addnew_inst_form_submit(request):
         return HttpResponse(
             json.dumps({"nothing to see": "this isn't happening"})
         )
+
+# def search_form_submit(request):
+#     if request.method == 'POST':
+
+#         content = request.POST
+#         # print "content", content
+#         searched_string = content['search-text']
+#         print "searched_string_funct", searched_string
+
+#         return HttpResponse(
+#              json.dumps({'status': 'True'})
+#         )
+
+#     else:
+#         print "no hello"
+#         return HttpResponse(
+#             json.dumps({"nothing to see": "this isn't happening"})
+#         )

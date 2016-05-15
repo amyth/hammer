@@ -1,7 +1,7 @@
 <div class="header">
     <nav class="navbar">
         <div class="container">
-            
+            {# <div class="upload_norm_data"> #}
             <ul class="navbar-list icons-nav u-pull-left">
                 {% if upload_form %}
                 <li class="navbar-item">
@@ -13,7 +13,8 @@
                 </li>
                 {% endif %} 
             </ul>
-            
+            {# </div> #}
+            {# <div class="upload_unnorm_data"> #}
             <ul class="navbar-list icons-nav u-pull-left">
                 {% if upload_form %}
                 <li class="navbar-item">
@@ -25,7 +26,9 @@
                 </li>
                 {% endif %} 
             </ul>
-
+            {# </div> #}
+            
+            {# <div class="logout"> #}
             <ul class="navbar-list text-nav u-pull-right">
                 {% if user.is_authenticated %}
                 <li class="navbar-item">
@@ -36,6 +39,7 @@
                 </li>
                 {% endif %}
             </ul>
+            {# </div> #}
         </div>
     </nav>
 </div>

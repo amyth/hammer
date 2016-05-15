@@ -3,40 +3,70 @@
 {% block tabs %}
 	<ul class="tab-list">
 		{% for tab in tabtypes %}
-			<li class="cls_tab {% if request.GET.type == tab %}active{% endif %}{% if not request.GET.type and tab == 'normalized institutes' %}active{% endif %}">
+			<li class="cls_tab {% if request.GET.type == tab %}active{% endif %}{% if not request.GET.type and tab == 'matches' %}active{% endif %}" id="{{tab}}">
 				<a href="?type={{tab}}" data-type="{{tab}}">{{tab|title}}</a>
 			</li>
 		{% endfor %}
 	</ul>
 	<ul class="object-list cls_tab_content" id="normalized">
 
-		<div class="add-new-container">		
+		<div class="search-box" id="search-box">
+            <form class="search_form" id="search_form" method="GET" action="#"> 
+	            {% if norm_list == 1 %}
+	                <input type="hidden" name="type" value="matches">
+	            {% elif norm_list == 2 %}
+	                <input type="hidden" name="type" value="approved matches">
+	            {% elif norm_list == 3 %}
+	            	<input type="hidden" name="type" value="reverse matches">
+	            {% else %}
+	            	<input type="hidden" name="type" value="unmatched">
+	            {% endif %}
+
+	            <input type="text" id="search_text" name="searched" value="Search Here"></input>
+                <button type="submit" class="search-button" id="search-button">Search</button>
+            </form>
+        </div>
+        <div class="add-new-container">		
 			{% if norm_list == 1 and user_group == 1 %}
 				<a class="add-new icon" href="#" id="add-new"><span class="iconicfill-plus-alt"> Add New</span></a>
 			{% endif %}
 		</div>
 		{% for result in page %}
 			{% if norm_list == 1 %}
-				<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name" data-string-type="norm">
+				<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name" data-string-type="norm" data-group-id="{{ user_group }}">
 			{% elif norm_list == 2 %}
 				<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name" data-string-type="approved" data-group-id="{{ user_group }}">
 			{% elif norm_list == 3 %}
-				<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name" data-string-type="alias">
+				<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name" data-string-type="reverse_match" data-group-id="{{ user_group }}">
 			{% else %}	
-				<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name" data-string-type="unnorm">
+				<a href="javascript:void(0)" id="{{ result.id }}" class="cls_string_name" data-string-type="unnorm" data-group-id="{{ user_group }}">
 			{% endif %}
 				<div class="string-name">
-					<li>{{ result.name }}</li>	
+					<div class="string-name-container">
+						<li>{{ result.name }}</li>
+					</div>
+					</a>
+					<div class="match-text-container">
+						{% if norm_list == 1 %}
+							<p>{{ result.cummulative_matches}} Cummulative Matches Found</p>
+							<p>{{ result.no_of_matches}} Unique Matches Found</p>
+						{% elif norm_list == 2 %}
+							<p>{{ result.no_of_approved_matches}} Approved Matches Found</p>
+						{% elif norm_list == 3 %}
+							<p>Frequency: {{ result.frequency}}</p>
+							<p> {{ result.no_of_matches}} Unique Matches Found</p>
+						{% elif norm_list == 4 %}
+							<p>Frequency: {{ result.frequency}}</p>
+						{% endif %}
+					</div>
 					{% if norm_list == 1 %}
-					{# {% if result.no_of_matches %} #}
-						<p>{{ result.no_of_matches}} Matches Found</p>
-					{% elif norm_list == 2 %}
-						<p>{{ result.no_of_approved_matches}} Approved Matches Found</p>
-					{% elif norm_list == 3 %}
-						<p>{{ result.no_of_aliases}} Aliases Found</p>
+						<div class="match-buttons" id="match-buttons">
+							<button type="button" id="matches" data-result-id="{{ result.id }}" class="matches-button" data-group-id="{{ user_group }}">Matches</button>
+							<button type="button" id="approved" data-result-id="{{ result.id }}" class="matches-button" data-group-id="{{ user_group }}">Approved</button>
+							<button type="button" id="aliases" data-result-id="{{ result.id }}" class="matches-button" data-group-id="{{ user_group }}">Aliases</button>
+						</div>
 					{% endif %}
 				</div>
-			</a>
 		{% endfor %}
 		{% include 'partials/pagination.html' %}
 	</ul>

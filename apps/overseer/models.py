@@ -11,7 +11,7 @@ class InstituteType(models.Model):
 
 class NormalizedInstitute(models.Model):
 
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, db_index=True)
     city = models.CharField(max_length=40,default="None")
     state = models.CharField(max_length=30)
     country = models.CharField(default="India", max_length=30)
@@ -24,6 +24,7 @@ class NormalizedInstitute(models.Model):
     no_of_matches = models.IntegerField(default=0)
     no_of_approved_matches = models.IntegerField(default=0)
     no_of_aliases = models.IntegerField(default=0)
+    cummulative_matches = models.IntegerField(default=0)
 
 
     def __unicode__(self):
@@ -60,7 +61,7 @@ class NormalizedInstitute(models.Model):
         results = []
         matches = InstituteMatches.objects.filter(
             models.Q(normalized_inst_id=self) & models.Q(status=1)).order_by(
-                '-match_score')
+                '-unnormalized_inst__frequency')
         
         for match in matches:
             matched_object = match.get_match(self)
@@ -72,7 +73,8 @@ class NormalizedInstitute(models.Model):
                 "norm_string": match.normalized_inst.name,
                 "match": {
                     "id": matched_object['id'],
-                    "content": matched_object['content']
+                    "content": matched_object['content'],
+                    "frequency": matched_object['frequency']
                 }
             }
         
@@ -118,8 +120,6 @@ class NormalizedInstitute(models.Model):
 
             x = {
                 "id": alias.id,
-                # "match_percentile": match.match_score,
-                # "status": match.status,
                 "norm_string": alias.normalized_institute.name,
                 "match": {
                     "id": matched_object['id'],
@@ -136,7 +136,38 @@ class NormalizedInstitute(models.Model):
 class UnnormalizedInstitute(models.Model):
 
     name = models.CharField(max_length=200)
+    frequency = models.IntegerField(default=1)
+    no_of_matches = models.IntegerField(default=0)
     status = models.IntegerField(default=0)
+
+    def get_matches(self):
+
+            #TODO: Implement logic to return matches
+            #      for the given object.
+
+            results = []
+            matches = InstituteMatches.objects.filter(
+                models.Q(unnormalized_inst_id=self) & models.Q(status=1)).order_by(
+                    '-match_score')
+            
+            for match in matches:
+                matched_object = match.get_norm_match(self)
+
+                x = {
+                    "id": match.id,
+                    "match_percentile": match.match_score,
+                    "status": match.status,
+                    "unnorm_string": match.unnormalized_inst.name,
+                    "match": {
+                        "id": matched_object['id'],
+                        "content": matched_object['content'],
+                        # "frequency": matched_object['frequency']
+                    }
+                }
+            
+                results.append(x)
+
+            return results
 
 
 
@@ -152,15 +183,14 @@ class InstituteAlias(models.Model):
         if against.pk == self.normalized_institute.pk:
             match_info['id'] = self.id
             match_info['content'] = self.ins_alias
-            # print "Content = ", self.unnormalized_inst.name
             return match_info
         
         return None
 
 class InstituteMatches(models.Model):
 
-    normalized_inst = models.ForeignKey(NormalizedInstitute,related_name='norm_string_set')
-    unnormalized_inst = models.ForeignKey(UnnormalizedInstitute,related_name='unnorm_string_set')
+    normalized_inst = models.ForeignKey(NormalizedInstitute, related_name='norm_string_set')
+    unnormalized_inst = models.ForeignKey(UnnormalizedInstitute, related_name='unnorm_string_set')
     match_score = models.IntegerField(default=0)
     status = models.IntegerField(default=0)
 
@@ -173,7 +203,19 @@ class InstituteMatches(models.Model):
         if against.pk == self.normalized_inst.pk:
             match_info['id'] = self.id
             match_info['content'] = self.unnormalized_inst.name
-            # print "Content = ", self.unnormalized_inst.name
+            match_info['frequency'] = self.unnormalized_inst.frequency
+            return match_info
+        
+        return None
+
+    def get_norm_match(self, against):
+        
+        match_info = {}
+        
+        if against.pk == self.unnormalized_inst.pk:
+            match_info['id'] = self.id
+            match_info['content'] = self.normalized_inst.name
+            # match_info['frequency'] = self.unnormalized_inst.frequency
             return match_info
         
         return None
