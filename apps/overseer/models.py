@@ -18,8 +18,8 @@ class NormalizedInstitute(models.Model):
     established = models.IntegerField(default=0)
     created_on = models.DateTimeField(auto_now=False, auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True, auto_now_add=False)
-    modified_by = models.ForeignKey(User, null=True, blank=True)
-    type_of_institute = models.CharField(max_length = 5, default="None")
+    # modified_by = models.ForeignKey(User)
+    type_of_institute = models.ForeignKey(InstituteType)
     misc = models.CharField(blank=True, null=True, max_length=100)
     no_of_matches = models.IntegerField(default=0)
     no_of_approved_matches = models.IntegerField(default=0)
@@ -29,17 +29,6 @@ class NormalizedInstitute(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.name
-        
-    # def get_no_of_matches(self):
-    #     key = "matches::%s" % self.pk
-    #     count = cache.get(key)
-    #     if count:
-    #         return count
-
-    #     count = self.norm_string_set.filter(models.Q(status=1)).count()
-    #     cache.set(key, count)
-
-    #     return count
 
     @property
     def has_match(self):
@@ -53,10 +42,12 @@ class NormalizedInstitute(models.Model):
     def has_aliases(self):
         return bool(self.no_of_aliases)    
 
-    def get_matches(self):
 
-        #TODO: Implement logic to return matches
-        #      for the given object.
+
+    #  Implement logic to return matches
+    #  for the given normalized institute.
+
+    def get_matches(self):
 
         results = []
         matches = InstituteMatches.objects.filter(
@@ -64,7 +55,7 @@ class NormalizedInstitute(models.Model):
                 '-unnormalized_inst__frequency')
         
         for match in matches:
-            matched_object = match.get_match(self)
+            matched_object = match.get_match(self)   ## get_match from the InstituteMatches model
 
             x = {
                 "id": match.id,
@@ -82,6 +73,10 @@ class NormalizedInstitute(models.Model):
 
         return results
 
+    #  Implement logic to return approved matches
+    #  for the given normalized institute.
+    
+
     def get_approved_matches(self):
 
 
@@ -91,7 +86,7 @@ class NormalizedInstitute(models.Model):
                 '-match_score')
 
         for match in appr_matches:
-            matched_object = match.get_match(self)
+            matched_object = match.get_match(self)   ## get_match from the InstituteMatches model 
 
             x = {
                 "id": match.id,
@@ -106,7 +101,61 @@ class NormalizedInstitute(models.Model):
             
             results.append(x)
 
-        return results    
+        return results
+
+
+    def get_discarded_matches(self):
+
+
+        results = []
+        disc_matches = InstituteMatches.objects.filter(
+                models.Q(normalized_inst_id=self) & (models.Q(status=3) | models.Q(status=5))).order_by(
+                '-match_score')
+
+        for match in disc_matches:
+            matched_object = match.get_match(self)   ## get_match from the InstituteMatches model 
+
+            x = {
+                "id": match.id,
+                "match_percentile": match.match_score,
+                "status": match.status,
+                "norm_string": match.normalized_inst.name,
+                "match": {
+                    "id": matched_object['id'],
+                    "content": matched_object['content']
+                }
+            }
+            
+            results.append(x)
+
+        return results   
+
+
+    def get_skipped_matches(self):
+
+
+        results = []
+        skip_matches = InstituteMatches.objects.filter(
+                models.Q(normalized_inst_id=self) & models.Q(status=4)).order_by(
+                '-match_score')
+
+        for match in skip_matches:
+            matched_object = match.get_match(self)   ## get_match from the InstituteMatches model 
+
+            x = {
+                "id": match.id,
+                "match_percentile": match.match_score,
+                "status": match.status,
+                "norm_string": match.normalized_inst.name,
+                "match": {
+                    "id": matched_object['id'],
+                    "content": matched_object['content']
+                }
+            }
+            
+            results.append(x)
+
+        return results
 
 
     def get_approved_aliases(self):
@@ -116,7 +165,7 @@ class NormalizedInstitute(models.Model):
         aliases = InstituteAlias.objects.filter(models.Q(normalized_institute_id=self))
 
         for alias in aliases:
-            matched_object = alias.get_alias_match(self)
+            matched_object = alias.get_alias_match(self)     ## get_alias_match from the InstituteMatches model
 
             x = {
                 "id": alias.id,
@@ -129,7 +178,7 @@ class NormalizedInstitute(models.Model):
         
             results.append(x)
 
-        return results    
+        return results
 
 
 
@@ -141,9 +190,6 @@ class UnnormalizedInstitute(models.Model):
     status = models.IntegerField(default=0)
 
     def get_matches(self):
-
-            #TODO: Implement logic to return matches
-            #      for the given object.
 
             results = []
             matches = InstituteMatches.objects.filter(
@@ -161,7 +207,6 @@ class UnnormalizedInstitute(models.Model):
                     "match": {
                         "id": matched_object['id'],
                         "content": matched_object['content'],
-                        # "frequency": matched_object['frequency']
                     }
                 }
             
@@ -194,7 +239,17 @@ class InstituteMatches(models.Model):
     match_score = models.IntegerField(default=0)
     status = models.IntegerField(default=0)
 
+    '''
 
+    status values and corresponding tag
+
+    status value 1 = unapproved match
+    status value 2 = approved match
+    status value 3 = manual discarded match
+    status value 4 = skipped match
+    status value 5 = auto discarded match
+
+    '''
 
     def get_match(self, against):
         
@@ -215,7 +270,6 @@ class InstituteMatches(models.Model):
         if against.pk == self.unnormalized_inst.pk:
             match_info['id'] = self.id
             match_info['content'] = self.normalized_inst.name
-            # match_info['frequency'] = self.unnormalized_inst.frequency
             return match_info
         
         return None

@@ -1,0 +1,20 @@
+{% block add_new_alias %}	
+	<div id="alias-modal" class="alias-modal">
+	  <!-- Modal content -->
+		<div class="modal-content">
+			<span class="closed">×</span>
+			{# <p>Some text in the Modal..</p> #}
+			<div class="add-new-alias-form-container">
+				<h4> Add New Alias </h4>
+				<form id="add-new-alias-form" class="add-new-alias-form" action="" method="POST">
+				{% csrf_token %}
+					<ul>
+						<input type="hidden" id="inst_id" name="inst_id" value="234"></input>
+						<li><div class="form-field-name">Alias Name :</div><input type="text" id="alias-name" name="alias-name" value=''></input></li>
+						<li><button class="button-primary" type="submit" id="submit_alias_form">Submit</button></li>
+					</ul>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock add_new_alias %}

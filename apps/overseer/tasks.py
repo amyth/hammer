@@ -20,12 +20,16 @@ class CreateBulkInstitutes(Task):
         """
 
         for obj in data:
+            
+            inst_type = models.InstituteType.objects.get(id = 1)
+
             models.NormalizedInstitute.objects.create(
                 name = obj.get('name'),
-                city = obj.get('location.city',''),
-                state = obj.get('location.state',''),
-                country = obj.get('location.country',''),
-                established = obj.get('established',0))
+                city = obj.get('location.city','None'),
+                state = obj.get('location.state','None'),
+                country = obj.get('location.country','None'),
+                established = obj.get('established',0),
+                type_of_institute = inst_type)
 
 
 class CreateMatches(Task):
@@ -84,6 +88,3 @@ class CreateMatches(Task):
                         normalized_ins.no_of_matches = normalized_ins.no_of_matches + 1
                         normalized_ins.cummulative_matches = normalized_ins.cummulative_matches + unnorm_ins.frequency
                         normalized_ins.save()
-
-                        # x.status = 1
-                        # x.save()

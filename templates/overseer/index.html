@@ -5,14 +5,17 @@
 	<div class="container">
 		<div class="row">
 			<div class="eight columns">
-				{% block add_new %}
-					{% include 'partials/add_new_form.html' %}
-				{% endblock add_new %}
+				{% block add_new_alias %}
+					{% include 'partials/add_new_alias_form.html' %}
+				{% endblock add_new_alias %}
 				{% block tabs %}
 					{% include 'partials/tabs.html' %}
 				{% endblock tabs %}
 			</div>
 			<div class="four columns">
+				{% block add_new %}
+					{% include 'partials/add_new_form.html' %}
+				{% endblock add_new %}
 				{% block string_info %}
 					{% include 'partials/string_info.html' %}
 				{% endblock string_info %}
